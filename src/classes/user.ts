@@ -1,8 +1,10 @@
-class User {
-    
+export class User {
+    user: string
+    password: string
+    name: string
 }
 
-class UserAuth {
+export class UserAuth {
     user: string
     password: string
 }
