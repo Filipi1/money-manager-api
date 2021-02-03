@@ -20,7 +20,6 @@ export class AuthController {
             throw new HttpException({message: "Credênciais Inválidas"}, HttpStatus.BAD_REQUEST)
         }
 
-        console.log(result)
         return result
     }
 }
