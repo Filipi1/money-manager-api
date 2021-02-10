@@ -17,7 +17,7 @@ export class AuthController {
         var result = await this.authService.auth(userAuth)
 
         if (!result) {
-            throw new HttpException({message: "Credênciais Inválidas"}, HttpStatus.BAD_REQUEST)
+            throw new HttpException({code: HttpStatus.BAD_REQUEST, message: "Credênciais Inválidas"}, HttpStatus.BAD_REQUEST)
         }
 
         return result
