@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserAuth } from 'src/classes/user';
 import { UserService } from '../user/user.service';
@@ -8,18 +8,32 @@ export class AuthService {
     constructor(private userService: UserService, private jwtService: JwtService) {}
 
     async auth(userAuth: UserAuth) {
-        return await this.userService.findOne(userAuth.user).then((user: UserAuth) => {
-            if (user == null)
-                return user
-            
-            if (user.user == userAuth.user && user.password == userAuth.password) {
-                
-                var token = this.jwtService.sign(user);
-                
-                return { user: user, token: token }
-            }
+        const response = this.validate(userAuth).then((userData) => {
+            if (!userData)
+                return null
+            let payload = `${userData.id}`;
+            const accessToken = this.jwtService.sign(payload);
 
-            return null
+            return {
+                status: 200,
+                data: {
+                    user: userData,
+                    access: {
+                        expires_in: 3600,
+                        token: accessToken,
+                        user_id: payload,
+                    }
+                }
+            }
         })
+
+        if (!response)
+            throw new HttpException("Não autorizado", HttpStatus.UNAUTHORIZED)
+
+        return response
+    }
+
+    async validate(userAuth: UserAuth) : Promise<User> {
+        return await this.userService.findOne(userAuth.user);
     }
 }
