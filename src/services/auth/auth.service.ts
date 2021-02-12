@@ -11,9 +11,13 @@ export class AuthService {
         const response = this.validate(userAuth).then((userData) => {
             if (!userData)
                 return null
-            let payload = `${userData.id}`;
-            const accessToken = this.jwtService.sign(payload);
+            let payload = {
+                id: userData.id,
+                nome: userData.name
+            };
+            const accessToken = this.jwtService.sign(payload, {expiresIn: 3600});
 
+            userData.password = null
             return {
                 status: 200,
                 data: {

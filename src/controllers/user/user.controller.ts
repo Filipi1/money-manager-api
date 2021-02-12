@@ -9,8 +9,11 @@ export class UserController {
     
     @UseGuards(AuthGuard('jwt'))
     @Get(':id')
-    async obterUsuario(@Req() req, @Param('id') identifier) {        
+    async obterUsuario(@Param('id') identifier) {        
         var user = await this.userService.findOneById(identifier).then(user => user)
+        
+        if (user)
+            user.password = null;
 
         if (!user) {
             throw new HttpException("Nenhum usuário encontrado para essa solicitação", HttpStatus.NOT_FOUND)
