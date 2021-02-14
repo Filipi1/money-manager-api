@@ -25,7 +25,6 @@ export class AuthService {
                     access: {
                         expires_in: 3600,
                         token: accessToken,
-                        user_id: payload,
                     }
                 }
             }
