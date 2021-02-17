@@ -1,6 +1,6 @@
-import { Controller, Get, HttpException, HttpStatus, Param, Req, UseGuards } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from 'src/classes/user.entity';
 import { UserService } from 'src/services/user/user.service';
 
 @Controller('user')
@@ -9,7 +9,7 @@ export class UserController {
     
     @UseGuards(AuthGuard('jwt'))
     @Get(':id')
-    async obterUsuario(@Param('id') identifier) {        
+    async obterUsuario(@Param('id') identifier): Promise<User> {        
         var user = await this.userService.findOneById(identifier).then(user => user)
         
         if (user)
@@ -20,5 +20,11 @@ export class UserController {
         }
 
         return user
+    }
+
+    @Post()
+    async create(@Body() user: User) {
+
+        return await this.userService.create(user);
     }
 }
