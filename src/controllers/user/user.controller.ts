@@ -10,7 +10,14 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     @Get()
     async findAll(): Promise<User[]> {
-        return await this.userService.findAll();
+
+        var users = await this.userService.findAll();
+
+        users.forEach(user => {
+            user.password = null
+        });
+
+        return users;
     }
 
     @UseGuards(AuthGuard('jwt'))
