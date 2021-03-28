@@ -11,6 +11,6 @@ export class AuthController {
     @Post()
     @HttpCode(200)
     async login(@Body() userAuth: UserAuth) {
-        return await this.authService.auth(userAuth)
+        return this.authService.auth(userAuth)
     }
 }

@@ -8,9 +8,10 @@ export class AuthService {
     constructor(private userService: UserService, private jwtService: JwtService) {}
 
     async auth(userAuth: UserAuth) {
-        const response = this.validate(userAuth).then((userData) => {
+        return this.validate(userAuth).then((userData) => {
             if (!userData)
-                return null
+                throw new HttpException("Credênciais Inválidas", HttpStatus.UNAUTHORIZED)
+            
             let payload = {
                 id: userData.id,
                 nome: userData.name
@@ -29,14 +30,9 @@ export class AuthService {
                 }
             }
         })
-
-        if (!response)
-            throw new HttpException("Não autorizado", HttpStatus.UNAUTHORIZED)
-
-        return response
     }
 
     async validate(userAuth: UserAuth) : Promise<User> {
-        return await this.userService.findOne(userAuth.user);
+        return this.userService.findOne(userAuth.user);
     }
 }
