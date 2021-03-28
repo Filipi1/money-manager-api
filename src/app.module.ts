@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { PaymentsController } from './controllers/payments/payments.controller';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -21,9 +23,10 @@ import { AuthModule } from './modules/auth/auth.module';
       autoLoadEntities: true
     }),
     UserModule,
-    AuthModule
+    AuthModule,
+    PaymentModule
   ],
-  controllers: [],
+  controllers: [PaymentsController],
   providers: [],
 })
 export class AppModule { }

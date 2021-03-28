@@ -3,26 +3,17 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/classes/user.entity';
 import { UserService } from 'src/services/user/user.service';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
     constructor(private userService: UserService) { }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get()
-    async findAll(): Promise<User[]> {
-
-        var users = await this.userService.findAll();
-
-        users.forEach(user => {
-            user.password = null
-        });
-
-        return users;
-    }
-
-    @UseGuards(AuthGuard('jwt'))
     @Get(':id')
-    async obterUsuario(@Param('id') identifier): Promise<User> {
+    async obterUsuario(@Param('id') identifier, @Req() request): Promise<User> {
+
+        if (request.user.id != identifier)
+            throw new HttpException("Você não possui permissão para isso.", HttpStatus.UNAUTHORIZED)
+
         var user = await this.userService.findOneById(identifier).then(user => user)
 
         if (user)
@@ -42,14 +33,9 @@ export class UserController {
 
     @Put(':id')
     async update(@Param('id') id: string, @Body() user: User) {
-
         if (Number(id) !== user.id) {
-            console.log(id, user.id);
             throw new HttpException("Os id's informados são diferentes", HttpStatus.NOT_FOUND)
-            
         }
-
-        console.log(id, user.id);
 
         return this.userService.update(id, user);
     }
