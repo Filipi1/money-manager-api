@@ -1,5 +1,4 @@
-import { Body, Header, HttpException, HttpStatus, Req } from '@nestjs/common';
-import { Controller, Get, HttpService, Post, UseGuards } from '@nestjs/common';
+import { Body, HttpException, HttpStatus, Req, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Payment, PaymentStatus, RecurrenceType } from 'src/classes/payment.entity';
 import { PaymentService } from 'src/services/payment/payment.service';
