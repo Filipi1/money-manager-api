@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { compare } from 'bcryptjs';
 import { User, UserAuth } from 'src/classes/user.entity';
 import { UserService } from '../user/user.service';
 
@@ -8,9 +9,15 @@ export class AuthService {
     constructor(private userService: UserService, private jwtService: JwtService) {}
 
     async auth(userAuth: UserAuth) {
-        return this.validate(userAuth).then((userData) => {
+        return this.validate(userAuth).then(async (userData) => {
             if (!userData)
                 throw new HttpException("Credênciais Inválidas", HttpStatus.UNAUTHORIZED)
+
+            const passwordMatched = await compare(userAuth.password, userData.password);
+
+            if(!passwordMatched) {
+                throw new HttpException("Credênciais Inválidas", HttpStatus.UNAUTHORIZED);
+            }
             
             let payload = {
                 id: userData.id,
